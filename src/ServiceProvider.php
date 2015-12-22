@@ -48,9 +48,9 @@ class ServiceProvider extends BaseServiceProvider
         $this->registerSeeds();
         $this->registerConfigurations();
 
-        //if (!$this->app->runningInConsole()) {
+        if (!$this->app->runningInConsole()) {
             $this->registerAcl($gate);
-        //}
+        }
 
         $this->registerCommands();
     }
