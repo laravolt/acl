@@ -48,15 +48,20 @@ class ServiceProvider extends BaseServiceProvider
         $this->registerSeeds();
         $this->registerConfigurations();
 
-        if (!$this->app->runningInConsole()) {
-            $this->registerAcl($gate);
-        }
+        $this->registerAcl($gate);
+
 
         $this->registerCommands();
     }
 
     protected function registerAcl($gate)
     {
+        $table_permissions_name = app('Laravolt\Acl\Models\Permission')->getTable();
+
+        if (! Schema::hasTable($table_permissions_name)) {
+            return false;
+        }
+
         $gate->before(function ($user) {
             $isAdmin = call_user_func(config('acl.is_admin'), $user);
             if ($isAdmin) {
