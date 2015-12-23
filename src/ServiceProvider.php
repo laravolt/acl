@@ -2,6 +2,7 @@
 
 namespace Laravolt\Acl;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Laravolt\Acl\Commands\SyncPermission;
