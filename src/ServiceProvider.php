@@ -46,23 +46,17 @@ class ServiceProvider extends BaseServiceProvider
     {
 
         $this->registerMigrations();
-        $this->registerSeeds();
         $this->registerConfigurations();
 
-        $this->registerAcl($gate);
-
+        if (!$this->skipAcl()) {
+            $this->registerAcl($gate);
+        }
 
         $this->registerCommands();
     }
 
     protected function registerAcl($gate)
     {
-        $table_permissions_name = app('Laravolt\Acl\Models\Permission')->getTable();
-
-        if (! Schema::hasTable($table_permissions_name)) {
-            return false;
-        }
-
         $gate->before(function ($user) {
             $isAdmin = call_user_func(config('acl.is_admin'), $user);
             if ($isAdmin) {
@@ -71,7 +65,6 @@ class ServiceProvider extends BaseServiceProvider
         });
 
         $permissions = Permission::all();
-
         foreach ($permissions as $permission) {
             $gate->define($permission->name, function (HasRoleAndPermission $user) use ($permission) {
                 return $user->hasPermission($permission);
@@ -79,6 +72,19 @@ class ServiceProvider extends BaseServiceProvider
         }
     }
 
+    protected function skipAcl()
+    {
+        $table_permissions_name = app('Laravolt\Acl\Models\Permission')->getTable();
+        if (!Schema::hasTable($table_permissions_name)) {
+            return true;
+        }
+
+        if ($this->app->runningInConsole()) {
+            return true;
+        }
+
+        return false;
+    }
     /**
      * Register the package migrations
      *
@@ -90,18 +96,6 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             $this->packagePath('database/migrations') => database_path('/migrations')
         ], 'migrations');
-    }
-
-    /**
-     * Register the package database seeds
-     *
-     * @return void
-     */
-    protected function registerSeeds()
-    {
-        $this->publishes([
-            $this->packagePath('database/seeds') => database_path('/seeds')
-        ], 'seeds');
     }
 
     /**
