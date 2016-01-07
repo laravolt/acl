@@ -47,6 +47,7 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->registerMigrations();
         $this->registerConfigurations();
+        $this->registerEnum();
 
         if (!$this->skipAcl()) {
             $this->registerAcl($gate);
@@ -122,6 +123,13 @@ class ServiceProvider extends BaseServiceProvider
         });
 
         $this->commands('command.laravolt.acl.sync-permission');
+    }
+
+    protected function registerEnum()
+    {
+        $this->publishes([
+            $this->packagePath('stubs/app/Enum/Permission.php') => app_path('Enum/Permission.php'),
+        ], 'enum');
     }
 
     /**

@@ -1,5 +1,5 @@
 <?php
-namespace Laravolt\Acl\Enum;
+namespace App\Enum;
 
 use MyCLabs\Enum\Enum;
 
