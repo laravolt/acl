@@ -8,7 +8,7 @@ class Role extends Model
 {
     protected $table = 'acl_roles';
 
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name'];
 
     public function permissions()
     {
@@ -17,7 +17,7 @@ class Role extends Model
 
     public function users()
     {
-        return $this->belongsToMany(config('auth.model'), 'acl_role_user');
+        return $this->belongsToMany(config('auth.providers.users.model'), 'acl_role_user');
     }
 
     public function addPermission($permission)
