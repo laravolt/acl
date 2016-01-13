@@ -49,9 +49,7 @@ class ServiceProvider extends BaseServiceProvider
         $this->registerConfigurations();
         $this->registerEnum();
 
-        if (!$this->skipAcl()) {
-            $this->registerAcl($gate);
-        }
+        $this->registerAcl($gate);
 
         $this->registerCommands();
     }
@@ -65,6 +63,20 @@ class ServiceProvider extends BaseServiceProvider
             }
         });
 
+        if ($this->hasPermissionTable()) {
+            $this->definePermission($gate);
+        }
+    }
+
+    protected function hasPermissionTable()
+    {
+        $table_permissions_name = app('Laravolt\Acl\Models\Permission')->getTable();
+
+        return Schema::hasTable($table_permissions_name);
+    }
+
+    protected function definePermission(Gate $gate)
+    {
         $permissions = Permission::all();
         foreach ($permissions as $permission) {
             $gate->define($permission->name, function (HasRoleAndPermission $user) use ($permission) {
@@ -73,19 +85,6 @@ class ServiceProvider extends BaseServiceProvider
         }
     }
 
-    protected function skipAcl()
-    {
-        $table_permissions_name = app('Laravolt\Acl\Models\Permission')->getTable();
-        if (!Schema::hasTable($table_permissions_name)) {
-            return true;
-        }
-
-        //if ($this->app->runningInConsole()) {
-        //    return true;
-        //}
-
-        return false;
-    }
     /**
      * Register the package migrations
      *
