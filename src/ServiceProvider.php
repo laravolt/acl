@@ -80,9 +80,9 @@ class ServiceProvider extends BaseServiceProvider
             return true;
         }
 
-        if ($this->app->runningInConsole()) {
-            return true;
-        }
+        //if ($this->app->runningInConsole()) {
+        //    return true;
+        //}
 
         return false;
     }
