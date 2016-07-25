@@ -13,23 +13,23 @@ use Laravolt\Acl\Models\Permission;
  * Class PackageServiceProvider
  *
  * @package Laravolt\Acl
- * @see http://laravel.com/docs/5.1/packages#service-providers
- * @see http://laravel.com/docs/5.1/providers
+ * @see http://laravel.com/docs/master/packages#service-providers
+ * @see http://laravel.com/docs/master/providers
  */
 class ServiceProvider extends BaseServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
      *
-     * @see http://laravel.com/docs/5.1/providers#deferred-providers
+     * @see http://laravel.com/docs/master/providers#deferred-providers
      * @var bool
      */
-    protected $defer = false;
+    protected $defer = true;
 
     /**
      * Register the service provider.
      *
-     * @see http://laravel.com/docs/5.1/providers#the-register-method
+     * @see http://laravel.com/docs/master/providers#the-register-method
      * @return void
      */
     public function register()
@@ -39,7 +39,7 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Application is booting
      *
-     * @see http://laravel.com/docs/5.1/providers#the-boot-method
+     * @see http://laravel.com/docs/master/providers#the-boot-method
      * @param Gate $gate
      */
     public function boot(Gate $gate)
@@ -57,7 +57,7 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerAcl($gate)
     {
         $gate->before(function ($user) {
-            $isAdmin = call_user_func(config('acl.is_admin'), $user);
+            $isAdmin = call_user_func(config('laravolt.acl.is_admin'), $user);
             if ($isAdmin) {
                 return true;
             }
@@ -88,20 +88,18 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Register the package migrations
      *
-     * @see http://laravel.com/docs/5.1/packages#publishing-file-groups
+     * @see http://laravel.com/docs/master/packages#publishing-file-groups
      * @return void
      */
     protected function registerMigrations()
     {
-        $this->publishes([
-            $this->packagePath('database/migrations') => database_path('/migrations')
-        ], 'migrations');
+        $this->loadMigrationsFrom($this->packagePath('database/migrations'));
     }
 
     /**
      * Register the package configurations
      *
-     * @see http://laravel.com/docs/5.1/packages#configuration
+     * @see http://laravel.com/docs/master/packages#configuration
      * @return void
      */
     protected function registerConfigurations()
@@ -110,7 +108,7 @@ class ServiceProvider extends BaseServiceProvider
             $this->packagePath('config/config.php'), 'acl'
         );
         $this->publishes([
-            $this->packagePath('config/config.php') => config_path('acl.php'),
+            $this->packagePath('config/config.php') => config_path('laravolt/acl.php'),
         ], 'config');
     }
 

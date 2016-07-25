@@ -52,6 +52,11 @@ trait HasRoleAndPermission
         return $this->roles()->detach($role);
     }
 
+    public function syncRoles($roles)
+    {
+        return $this->roles()->sync($roles);
+    }
+
     public function hasPermission($permission)
     {
         if (is_string($permission)) {

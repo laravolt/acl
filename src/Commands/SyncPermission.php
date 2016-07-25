@@ -14,7 +14,7 @@ class SyncPermission extends Command
      *
      * @var string
      */
-    protected $signature = 'acl:sync-permission {--clear}';
+    protected $signature = 'laravolt:acl:sync-permission {--clear}';
 
     /**
      * The console command description.
@@ -51,7 +51,7 @@ class SyncPermission extends Command
             DB::table(with(new Permission)->getTable())->truncate();
         }
 
-        $enumClass = $this->config->get('acl.permission_enum');
+        $enumClass = $this->config->get('laravolt.acl.permission_enum');
         $permissions = $enumClass::toArray();
 
         $items = collect();
