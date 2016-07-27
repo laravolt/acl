@@ -24,7 +24,7 @@ class ServiceProvider extends BaseServiceProvider
      * @see http://laravel.com/docs/master/providers#deferred-providers
      * @var bool
      */
-    protected $defer = true;
+    protected $defer = false;
 
     /**
      * Register the service provider.
