@@ -4,7 +4,5 @@
  */
 return [
     'permission_enum' => \App\Enum\Permission::class,
-    'is_admin'        => function ($user) {
-        return $user->id == 1;
-    },
+    'is_root'        => 'isRoot',
 ];

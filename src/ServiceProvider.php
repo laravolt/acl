@@ -57,8 +57,16 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerAcl($gate)
     {
         $gate->before(function ($user) {
-            $isAdmin = call_user_func(config('laravolt.acl.is_admin'), $user);
-            if ($isAdmin) {
+
+            $isRootConfig = config('acl.is_root');
+
+            if ($isRootConfig instanceof \Closure) {
+                $isRoot = call_user_func($isRootConfig, $user);
+            } elseif (is_string($isRootConfig) && method_exists($user, $isRootConfig)) {
+                $isRoot = $user->$isRootConfig();
+            }
+
+            if ($isRoot) {
                 return true;
             }
         });
