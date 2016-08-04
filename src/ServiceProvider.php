@@ -57,7 +57,15 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerAcl($gate)
     {
         $gate->before(function ($user) {
-            $isAdmin = call_user_func(config('acl.is_admin'), $user);
+
+            $isAdminConfig = config('acl.is_admin');
+
+            if ($isAdminConfig instanceof \Closure) {
+                $isAdmin = call_user_func($isAdminConfig, $user);
+            } elseif (is_string($isAdminConfig) && method_exists($user, $isAdminConfig)) {
+                $isAdmin = $user->$isAdminConfig();
+            }
+
             if ($isAdmin) {
                 return true;
             }
