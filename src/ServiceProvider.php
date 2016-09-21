@@ -113,7 +113,7 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerConfigurations()
     {
         $this->mergeConfigFrom(
-            $this->packagePath('config/config.php'), 'acl'
+            $this->packagePath('config/config.php'), 'laravolt.acl'
         );
         $this->publishes([
             $this->packagePath('config/config.php') => config_path('laravolt/acl.php'),
