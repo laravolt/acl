@@ -60,6 +60,7 @@ class ServiceProvider extends BaseServiceProvider
 
             $isRootConfig = config('acl.is_root');
 
+            $isRoot = false;
             if ($isRootConfig instanceof \Closure) {
                 $isRoot = call_user_func($isRootConfig, $user);
             } elseif (is_string($isRootConfig) && method_exists($user, $isRootConfig)) {
