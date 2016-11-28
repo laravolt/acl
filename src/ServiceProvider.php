@@ -58,7 +58,7 @@ class ServiceProvider extends BaseServiceProvider
     {
         $gate->before(function ($user) {
 
-            $isRootConfig = config('acl.is_root');
+            $isRootConfig = config('laravolt.acl.is_root');
 
             $isRoot = false;
             if ($isRootConfig instanceof \Closure) {
