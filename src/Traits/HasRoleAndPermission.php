@@ -13,6 +13,14 @@ trait HasRoleAndPermission
 
     public function hasRole($role)
     {
+        if (is_array($role)) {
+            foreach ($role as $r) {
+                if ($this->hasRole($r)) {
+                    return true;
+                }
+            }
+        }
+
         if (is_string($role)) {
             $role = Role::where('name', $role)->first();
         }
@@ -59,6 +67,14 @@ trait HasRoleAndPermission
 
     public function hasPermission($permission)
     {
+        if (is_array($permission)) {
+            foreach ($permission as $perm) {
+                if ($this->hasPermission($perm)) {
+                    return true;
+                }
+            }
+        }
+
         if (is_string($permission)) {
             $permission = Permission::where('name', $permission)->first();
         }
@@ -68,7 +84,7 @@ trait HasRoleAndPermission
         }
 
         if (!$permission instanceof Permission) {
-            throw new \InvalidArgumentException('Argument must be integer, string, or an instance of ' . Permission::class);
+            throw new \InvalidArgumentException('Argument must be integer, string, or an instance of '.Permission::class);
         }
 
         foreach ($this->roles as $assignedRole) {
