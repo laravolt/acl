@@ -11,7 +11,6 @@ use Laravolt\Acl\Models\Permission;
 
 /**
  * Class PackageServiceProvider
- *
  * @package Laravolt\Acl
  * @see http://laravel.com/docs/master/packages#service-providers
  * @see http://laravel.com/docs/master/providers
@@ -20,7 +19,6 @@ class ServiceProvider extends BaseServiceProvider
 {
     /**
      * Indicates if loading of the provider is deferred.
-     *
      * @see http://laravel.com/docs/master/providers#deferred-providers
      * @var bool
      */
@@ -28,7 +26,6 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Register the service provider.
-     *
      * @see http://laravel.com/docs/master/providers#the-register-method
      * @return void
      */
@@ -38,7 +35,6 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Application is booting
-     *
      * @see http://laravel.com/docs/master/providers#the-boot-method
      * @param Gate $gate
      */
@@ -79,9 +75,13 @@ class ServiceProvider extends BaseServiceProvider
 
     protected function hasPermissionTable()
     {
-        $table_permissions_name = app('Laravolt\Acl\Models\Permission')->getTable();
+        try {
+            $table_permissions_name = app('Laravolt\Acl\Models\Permission')->getTable();
 
-        return Schema::hasTable($table_permissions_name);
+            return Schema::hasTable($table_permissions_name);
+        } catch (\PDOException $e) {
+            return false;
+        }
     }
 
     protected function definePermission(Gate $gate)
@@ -96,7 +96,6 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Register the package migrations
-     *
      * @see http://laravel.com/docs/master/packages#publishing-file-groups
      * @return void
      */
@@ -107,7 +106,6 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Register the package configurations
-     *
      * @see http://laravel.com/docs/master/packages#configuration
      * @return void
      */
@@ -140,7 +138,6 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Loads a path relative to the package base directory
-     *
      * @param string $path
      * @return string
      */
