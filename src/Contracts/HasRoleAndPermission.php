@@ -5,11 +5,11 @@ interface HasRoleAndPermission
 {
     public function roles();
 
-    public function hasRole($role);
+    public function hasRole($role, $checkAll = false);
 
     public function assignRole($role);
 
     public function revokeRole($role);
 
-    public function hasPermission($permission);
+    public function hasPermission($permission, $checkAll = false);
 }

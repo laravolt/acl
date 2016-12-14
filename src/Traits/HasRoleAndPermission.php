@@ -11,13 +11,18 @@ trait HasRoleAndPermission
         return $this->belongsToMany(Role::class, 'acl_role_user');
     }
 
-    public function hasRole($role)
+    public function hasRole($role, $checkAll = false)
     {
         if (is_array($role)) {
+            $match = 0;
             foreach ($role as $r) {
-                if ($this->hasRole($r)) {
-                    return true;
-                }
+                $match += (int)$this->hasRole($r);
+            }
+
+            if ($checkAll) {
+                return $match == count($role);
+            } else {
+                return $match > 0;
             }
         }
 
@@ -65,13 +70,18 @@ trait HasRoleAndPermission
         return $this->roles()->sync($roles);
     }
 
-    public function hasPermission($permission)
+    public function hasPermission($permission, $checkAll = false)
     {
         if (is_array($permission)) {
+            $match = 0;
             foreach ($permission as $perm) {
-                if ($this->hasPermission($perm)) {
-                    return true;
-                }
+                $match += (int)$this->hasPermission($perm);
+            }
+
+            if ($checkAll) {
+                return $match == count($permission);
+            } else {
+                return $match > 0;
             }
         }
 
