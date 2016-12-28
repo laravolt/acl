@@ -41,7 +41,9 @@ class Role extends Model
     public function syncPermission(array $permissions)
     {
         $ids = collect($permissions)->transform(function ($permission) {
-            if (is_string($permission)) {
+            if (is_numeric($permission)) {
+                return (int)$permission;
+            } elseif (is_string($permission)) {
                 $permission = Permission::where('name', $permission)->first();
                 if ($permission) {
                     return $permission->id;
