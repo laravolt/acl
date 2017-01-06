@@ -67,7 +67,7 @@ trait HasRoleAndPermission
 
     public function syncRoles($roles)
     {
-        return $this->roles()->sync($roles);
+        return $this->roles()->sync((array)$roles);
     }
 
     public function hasPermission($permission, $checkAll = false)
