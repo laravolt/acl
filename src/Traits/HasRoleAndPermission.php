@@ -8,7 +8,7 @@ trait HasRoleAndPermission
 {
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'acl_role_user');
+        return $this->belongsToMany(Role::class, 'acl_role_user', 'user_id', 'role_id');
     }
 
     public function hasRole($role, $checkAll = false)
