@@ -2,6 +2,7 @@
 
 namespace Laravolt\Acl;
 
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
@@ -31,6 +32,9 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
+        $this->app->singleton('laravolt.acl', function(Application $app){
+            return new Acl();
+        });
     }
 
     /**
@@ -43,7 +47,6 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->registerMigrations();
         $this->registerConfigurations();
-        $this->registerEnum();
 
         $this->registerAcl($gate);
 
@@ -127,13 +130,6 @@ class ServiceProvider extends BaseServiceProvider
         });
 
         $this->commands('command.laravolt.acl.sync-permission');
-    }
-
-    protected function registerEnum()
-    {
-        $this->publishes([
-            $this->packagePath('stubs/app/Enum/Permission.php') => app_path('Enum/Permission.php'),
-        ], 'enum');
     }
 
     /**

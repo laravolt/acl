@@ -51,8 +51,7 @@ class SyncPermission extends Command
             DB::table(with(new Permission)->getTable())->truncate();
         }
 
-        $enumClass = $this->config->get('laravolt.acl.permission_enum');
-        $permissions = $enumClass::toArray();
+        $permissions = app('laravolt.acl')->permissions();
 
         $items = collect();
         foreach ($permissions as $name) {
