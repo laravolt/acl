@@ -4,8 +4,6 @@ namespace Laravolt\Acl\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Support\Facades\DB;
-use Laravolt\Acl\Models\Permission;
 
 class SyncPermission extends Command
 {
@@ -46,29 +44,8 @@ class SyncPermission extends Command
     {
         $this->info('Synchronize Permissions Entries');
 
-        if ($this->option('clear')) {
-            DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
-            DB::table(with(new Permission)->getTable())->truncate();
-        }
+        $result = app('laravolt.acl')->syncPermission($this->option('clear'));
 
-        $permissions = app('laravolt.acl')->permissions();
-
-        $items = collect();
-        foreach ($permissions as $name) {
-            $permission = Permission::firstOrNew(['name' => $name]);
-            $status = 'No Change';
-
-            if (!$permission->exists) {
-                $permission->save();
-                $status = 'New';
-            }
-
-            $items->push(['id' => $permission->getKey(), 'name' => $name, 'status' => $status]);
-        }
-
-        $items = $items->sortBy('id');
-
-        $this->table(['ID', 'Name', 'Status'], $items);
-
+        $this->table(['ID', 'Name', 'Status'], $result);
     }
 }
