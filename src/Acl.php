@@ -47,6 +47,13 @@ class Acl
             $items->push(['id' => $permission->getKey(), 'name' => $name, 'status' => $status]);
         }
 
+        // delete unused permissions
+        $unusedPermissions = Permission::whereNotIn('name', $this->permissions())->get();
+        foreach ($unusedPermissions as $permission) {
+            $items->push(['id' => $permission->getKey(), 'name' => $permission->name, 'status' => 'Deleted']);
+            $permission->delete();
+        }
+
         $items = $items->sortBy('name');
 
         return $items;
