@@ -44,12 +44,12 @@ class Role extends Model
             if (is_numeric($permission)) {
                 return (int)$permission;
             } elseif (is_string($permission)) {
-                $permission = Permission::where('name', $permission)->first();
-                if ($permission) {
-                    return $permission->id;
+                $permissionObject = Permission::where('name', $permission)->first();
+                if (!$permissionObject) {
+                    $permissionObject = Permission::firstOrCreate(['name' => $permission]);
                 }
 
-                return false;
+                return $permissionObject->id;
             }
         })->filter(function ($id) {
             return $id > 0;
