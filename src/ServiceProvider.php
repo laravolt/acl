@@ -50,7 +50,9 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->registerAcl($gate);
 
-        $this->registerCommands();
+        if ($this->app->runningInConsole()) {
+            $this->registerCommands();
+        }
     }
 
     protected function registerAcl($gate)
@@ -124,12 +126,12 @@ class ServiceProvider extends BaseServiceProvider
 
     protected function registerCommands()
     {
-        $this->app->singleton('command.laravolt.acl.sync-permission', function ($app) {
+        $this->app->singleton('laravolt.acl.sync-permission', function ($app) {
 
             return new SyncPermission($app['config']);
         });
 
-        $this->commands('command.laravolt.acl.sync-permission');
+        $this->commands('laravolt.acl.sync-permission');
     }
 
     /**
