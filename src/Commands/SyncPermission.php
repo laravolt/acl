@@ -12,7 +12,7 @@ class SyncPermission extends Command
      *
      * @var string
      */
-    protected $signature = 'laravolt:acl:sync-permission {--clear}';
+    protected $signature = 'laravolt:sync-permission {--clear}';
 
     /**
      * The console command description.
