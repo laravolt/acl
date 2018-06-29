@@ -67,7 +67,19 @@ trait HasRoleAndPermission
 
     public function syncRoles($roles)
     {
-        return $this->roles()->sync((array)$roles);
+        $ids = collect($roles)->transform(function ($role) {
+            if (is_numeric($role)) {
+                return (int)$role;
+            } elseif (is_string($role)) {
+                $role = Role::firstOrCreate(['name' => $role]);
+
+                return $role->getKey();
+            }
+        })->filter(function ($id) {
+            return $id > 0;
+        });
+
+        return $this->roles()->sync($ids);
     }
 
     public function hasPermission($permission, $checkAll = false)
