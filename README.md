@@ -22,3 +22,12 @@ Run migration:
 
 ### Command
 `php artisan laravolt:acl:sync-permission`
+
+### Bypass Authorization
+You can bypass authorization checking using Laravel built-in method:
+```php
+Gate::before(function($user){
+    // check if $user superadmin
+    // and then return true to skip all authorization checking
+});
+```
