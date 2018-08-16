@@ -62,7 +62,7 @@ trait HasRoleAndPermission
             $role = Role::where('name', $role)->first();
         }
 
-        return $this->roles()->detach($role);
+        return $this->roles()->syncWithoutDetaching($role);
     }
 
     public function syncRoles($roles)
