@@ -53,7 +53,7 @@ trait HasRoleAndPermission
             $role = Role::where('name', $role)->first();
         }
 
-        return $this->roles()->attach($role);
+        return $this->roles()->syncWithoutDetaching($role);
     }
 
     public function revokeRole($role)
@@ -62,7 +62,7 @@ trait HasRoleAndPermission
             $role = Role::where('name', $role)->first();
         }
 
-        return $this->roles()->syncWithoutDetaching($role);
+        return $this->roles()->detach($role);
     }
 
     public function syncRoles($roles)
