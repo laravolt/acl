@@ -23,7 +23,7 @@ class Role extends Model
     public function addPermission($permission)
     {
         if (is_string($permission)) {
-            $permission = Permission::where('name', $permission)->first();
+            $permission = Permission::firstOrCreate(['name' => $permission]);
         }
 
         return $this->permissions()->attach($permission);
@@ -32,7 +32,7 @@ class Role extends Model
     public function removePermission($permission)
     {
         if (is_string($permission)) {
-            $permission = Permission::where('name', $permission)->first();
+            $permission = Permission::firstOrCreate(['name' => $permission]);
         }
 
         return $this->permissions()->detach($permission);
