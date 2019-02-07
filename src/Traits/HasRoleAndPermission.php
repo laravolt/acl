@@ -27,11 +27,11 @@ trait HasRoleAndPermission
         }
 
         if (is_string($role)) {
-            $role = Role::where('name', $role)->first();
+            $role = $this->roles->firstWhere('name', $role);
         }
 
         if (is_integer($role)) {
-            $role = Role::find($role);
+            $role = $this->roles->firstWhere('id', $role);
         }
 
         if (!$role instanceof Role) {
