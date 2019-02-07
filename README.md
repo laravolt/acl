@@ -39,7 +39,7 @@ class User
 ```
 After that, `User` will have following methods:
 
-#### `$user->roles()`, 
+#### `$user->roles()`
 Relationships that defines `User` has many `Laravolt\Acl\Models\Role`.
 
 #### `$user->hasRole($role, $checkAll = false)`
