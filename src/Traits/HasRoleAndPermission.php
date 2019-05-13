@@ -1,6 +1,7 @@
 <?php
 namespace Laravolt\Acl\Traits;
 
+use Illuminate\Database\Eloquent\Model;
 use Laravolt\Acl\Models\Role;
 use Laravolt\Acl\Models\Permission;
 
@@ -34,12 +35,12 @@ trait HasRoleAndPermission
             $role = $this->roles->firstWhere('id', $role);
         }
 
-        if (!$role instanceof Role) {
+        if (!$role instanceof Model) {
             return false;
         }
 
         foreach ($this->roles as $assignedRole) {
-            if ($assignedRole->id == $role->id) {
+            if ($role->is($assignedRole)) {
                 return true;
             }
         }
@@ -105,13 +106,13 @@ trait HasRoleAndPermission
             $permission = Permission::find($permission);
         }
 
-        if (!$permission instanceof Permission) {
-            throw new \InvalidArgumentException('Argument must be integer, string, or an instance of '.Permission::class);
+        if (!$permission instanceof Model) {
+            throw new \InvalidArgumentException('Argument must be integer, string, or an instance of '.Model::class);
         }
 
         foreach ($this->roles as $assignedRole) {
             foreach ($assignedRole->permissions as $assignedPermission) {
-                if ($permission->id === $assignedPermission->id) {
+                if ($permission->is($assignedPermission)) {
                     return true;
                 }
             }
