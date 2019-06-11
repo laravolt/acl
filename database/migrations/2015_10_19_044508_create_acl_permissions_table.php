@@ -13,7 +13,7 @@ class CreateAclPermissionsTable extends Migration
     public function up()
     {
         Schema::create('acl_permissions', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id');
             $table->string('name')->unique();
             $table->timestamps();
         });

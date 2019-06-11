@@ -13,8 +13,8 @@ class CreateAclRoleUserTable extends Migration
     public function up()
     {
         Schema::create('acl_role_user', function (Blueprint $table) {
-            $table->unsignedInteger('role_id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('user_id');
 
             $table->foreign('role_id')->references('id')->on('acl_roles')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
