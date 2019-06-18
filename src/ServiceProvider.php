@@ -32,7 +32,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('laravolt.acl', function(Application $app){
+        $this->app->singleton('laravolt.acl', function (Application $app) {
             return new Acl();
         });
     }
@@ -40,24 +40,23 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Application is booting
      * @see http://laravel.com/docs/master/providers#the-boot-method
-     * @param Gate $gate
+     * @param  Gate  $gate
      */
     public function boot(Gate $gate)
     {
-
-        $this->registerMigrations();
         $this->registerConfigurations();
 
         $this->registerAcl($gate);
 
         if ($this->app->runningInConsole()) {
+            $this->registerMigrations();
             $this->registerCommands();
         }
     }
 
     protected function registerAcl($gate)
     {
-       if ($this->hasPermissionTable()) {
+        if ($this->hasPermissionTable()) {
             $this->definePermission($gate);
         }
     }
@@ -111,7 +110,6 @@ class ServiceProvider extends BaseServiceProvider
     protected function registerCommands()
     {
         $this->app->singleton('laravolt.acl.sync-permission', function ($app) {
-
             return new SyncPermission($app['config']);
         });
 
@@ -120,12 +118,11 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Loads a path relative to the package base directory
-     * @param string $path
+     * @param  string  $path
      * @return string
      */
     protected function packagePath($path = '')
     {
         return sprintf("%s/../%s", __DIR__, $path);
     }
-
 }
