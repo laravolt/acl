@@ -89,7 +89,13 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function registerMigrations()
     {
-        $this->loadMigrationsFrom($this->packagePath('database/migrations'));
+        if ($this->app->runningInConsole() && config('laravolt.acl.migrations')) {
+            $this->loadMigrationsFrom($this->packagePath('database/migrations'));
+        }
+
+        $this->publishes([
+            $this->packagePath('database/migrations') => database_path('migrations'),
+        ], 'migrations');
     }
 
     /**
