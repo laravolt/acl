@@ -17,7 +17,7 @@ trait HasRoleAndPermission
         if (is_array($role)) {
             $match = 0;
             foreach ($role as $r) {
-                $match += (int)$this->hasRole($r);
+                $match += (int)$this->hasRole($r, $checkAll);
             }
 
             if ($checkAll) {
