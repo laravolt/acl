@@ -3,7 +3,7 @@ namespace Laravolt\Acl\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Laravolt\Acl\Models\Role;
-use Laravolt\Acl\Models\Permission;
+use Laravolt\Acl\Repository\PermissionRepo;
 
 trait HasRoleAndPermission
 {
@@ -99,11 +99,11 @@ trait HasRoleAndPermission
         }
 
         if (is_string($permission)) {
-            $permission = Permission::where('name', $permission)->first();
+            $permission = (new PermissionRepo())->whereNotInName($permission);
         }
 
         if (is_integer($permission)) {
-            $permission = Permission::find($permission);
+            $permission = (new PermissionRepo())->find($permission);
         }
 
         if (!$permission instanceof Model) {

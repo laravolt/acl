@@ -3,6 +3,7 @@
 namespace Laravolt\Acl\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Laravolt\Acl\Repository\PermissionRepo;
 
 class Role extends Model
 {
@@ -12,7 +13,7 @@ class Role extends Model
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, 'acl_permission_role');
+        return $this->belongsToMany(config('laravolt.acl.models.permission'), 'acl_permission_role');
     }
 
     public function users()
@@ -23,7 +24,7 @@ class Role extends Model
     public function addPermission($permission)
     {
         if (is_string($permission)) {
-            $permission = Permission::firstOrCreate(['name' => $permission]);
+            $permission = (new PermissionRepo())->firstOrCreateName($permission);
         }
 
         return $this->permissions()->attach($permission);
@@ -32,7 +33,7 @@ class Role extends Model
     public function removePermission($permission)
     {
         if (is_string($permission)) {
-            $permission = Permission::firstOrCreate(['name' => $permission]);
+            $permission = (new PermissionRepo())->firstOrCreateName($permission);
         }
 
         return $this->permissions()->detach($permission);
@@ -44,7 +45,7 @@ class Role extends Model
             if (is_numeric($permission)) {
                 return (int)$permission;
             } elseif (is_string($permission)) {
-                $permissionObject = Permission::firstOrCreate(['name' => $permission]);
+                $permissionObject = (new PermissionRepo())->firstOrCreateName($permission);
 
                 return $permissionObject->id;
             }

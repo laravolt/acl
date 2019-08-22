@@ -8,7 +8,7 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Laravolt\Acl\Commands\SyncPermission;
 use Laravolt\Acl\Contracts\HasRoleAndPermission;
-use Laravolt\Acl\Models\Permission;
+use Laravolt\Acl\Repository\PermissionRepo;
 
 /**
  * Class PackageServiceProvider
@@ -64,7 +64,7 @@ class ServiceProvider extends BaseServiceProvider
     protected function hasPermissionTable()
     {
         try {
-            $table_permissions_name = app('Laravolt\Acl\Models\Permission')->getTable();
+            $table_permissions_name = app(config('laravolt.acl.models.permission'))->getTable();
 
             return Schema::hasTable($table_permissions_name);
         } catch (\PDOException $e) {
@@ -74,7 +74,7 @@ class ServiceProvider extends BaseServiceProvider
 
     protected function definePermission(Gate $gate)
     {
-        $permissions = Permission::all();
+        $permissions = (new PermissionRepo())->all();
         foreach ($permissions as $permission) {
             $gate->define($permission->name, function (HasRoleAndPermission $user) use ($permission) {
                 return $user->hasPermission($permission);

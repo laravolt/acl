@@ -3,7 +3,7 @@
 namespace Laravolt\Acl;
 
 use Illuminate\Support\Facades\DB;
-use Laravolt\Acl\Models\Permission;
+use Laravolt\Acl\Repository\PermissionRepo;
 
 class Acl
 {
@@ -31,12 +31,12 @@ class Acl
     {
         if ($clean) {
             DB::statement('SET FOREIGN_KEY_CHECKS = 0;');
-            DB::table(with(new Permission())->getTable())->truncate();
+            config('laravolt.acl.models.permission')::truncate();
         }
 
         $items = collect();
         foreach ($this->permissions() as $name) {
-            $permission = Permission::firstOrNew(['name' => $name]);
+            $permission = (new PermissionRepo())->firstOrNewName($name);
             $status = 'No Change';
 
             if (!$permission->exists) {
@@ -48,7 +48,7 @@ class Acl
         }
 
         // delete unused permissions
-        $unusedPermissions = Permission::whereNotIn('name', $this->permissions())->get();
+        $unusedPermissions = (new PermissionRepo())->whereNotInName($this->permissions());
         foreach ($unusedPermissions as $permission) {
             $items->push(['id' => $permission->getKey(), 'name' => $permission->name, 'status' => 'Deleted']);
             $permission->delete();
