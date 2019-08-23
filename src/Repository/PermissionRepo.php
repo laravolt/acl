@@ -7,32 +7,32 @@ class PermissionRepo
 
     public function __construct()
     {
-        $this->model = config('laravolt.acl.models.permission');
+        $this->model = app(config('laravolt.acl.models.permission'));
     }
 
     public function all()
     {
-        return $this->model::all();
+        return $this->model->all();
     }
 
     public function updateAll($key, string $description)
     {
-        return $this->model::whereId($key)->update(['description' => $description]);
+        return $this->model->whereId($key)->update(['description' => $description]);
     }
 
     public function firstOrCreateName(string $name)
     {
-        return $this->model::firstOrCreate(['name' => $name]);
+        return $this->model->firstOrCreate(['name' => $name]);
     }
 
     public function firstOrNewName(string $name)
     {
-        return $this->model::firstOrNew(['name' => $name]);
+        return $this->model->firstOrNew(['name' => $name]);
     }
 
     public function whereNotInName(array $name)
     {
-        return $this->model::whereNotIn('name', $name)->get();
+        return $this->model->whereNotIn('name', $name)->get();
     }
 
     public function whereNameFirst(string $permission)

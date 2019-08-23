@@ -4,12 +4,13 @@ namespace Laravolt\Acl\Traits;
 use Illuminate\Database\Eloquent\Model;
 use Laravolt\Acl\Models\Role;
 use Laravolt\Acl\Repository\PermissionRepo;
+use Laravolt\Acl\Repository\RoleRepo;
 
 trait HasRoleAndPermission
 {
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'acl_role_user', 'user_id', 'role_id');
+        return $this->belongsToMany(config('laravolt.acl.models.role'), 'acl_role_user', 'user_id', 'role_id');
     }
 
     public function hasRole($role, $checkAll = false)
@@ -51,7 +52,7 @@ trait HasRoleAndPermission
     public function assignRole($role)
     {
         if (is_string($role)) {
-            $role = Role::where('name', $role)->first();
+            $role = (new RoleRepo())->whereNameFirst($role);
         }
 
         return $this->roles()->syncWithoutDetaching($role);
@@ -60,7 +61,7 @@ trait HasRoleAndPermission
     public function revokeRole($role)
     {
         if (is_string($role)) {
-            $role = Role::where('name', $role)->first();
+            $role = (new RoleRepo())->whereNameFirst($role);
         }
 
         return $this->roles()->detach($role);
@@ -72,7 +73,7 @@ trait HasRoleAndPermission
             if (is_numeric($role)) {
                 return (int)$role;
             } elseif (is_string($role)) {
-                $role = Role::firstOrCreate(['name' => $role]);
+                $role = (new RoleRepo())->firstOrCreateName($role);
 
                 return $role->getKey();
             }
