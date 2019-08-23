@@ -2,7 +2,6 @@
 namespace Laravolt\Acl\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Laravolt\Acl\Models\Role;
 use Laravolt\Acl\Repository\PermissionRepo;
 use Laravolt\Acl\Repository\RoleRepo;
 
