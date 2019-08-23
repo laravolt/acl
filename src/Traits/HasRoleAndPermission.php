@@ -7,7 +7,7 @@ trait HasRoleAndPermission
 {
     public function roles()
     {
-        return $this->belongsToMany(config('laravolt.acl.models.permission'), 'acl_role_user', 'user_id', 'role_id');
+        return $this->belongsToMany(config('laravolt.acl.models.role'), 'acl_role_user', 'user_id', 'role_id');
     }
 
     public function hasRole($role, $checkAll = false)
