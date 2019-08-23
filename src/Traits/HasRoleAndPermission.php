@@ -2,14 +2,12 @@
 namespace Laravolt\Acl\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Laravolt\Acl\Models\Role;
-use Laravolt\Acl\Models\Permission;
 
 trait HasRoleAndPermission
 {
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'acl_role_user', 'user_id', 'role_id');
+        return $this->belongsToMany(config('laravolt.acl.models.permission'), 'acl_role_user', 'user_id', 'role_id');
     }
 
     public function hasRole($role, $checkAll = false)
@@ -51,7 +49,7 @@ trait HasRoleAndPermission
     public function assignRole($role)
     {
         if (is_string($role)) {
-            $role = Role::where('name', $role)->first();
+            $role = app(config('laravolt.acl.models.role'))->where('name', $role)->first();
         }
 
         return $this->roles()->syncWithoutDetaching($role);
@@ -60,7 +58,7 @@ trait HasRoleAndPermission
     public function revokeRole($role)
     {
         if (is_string($role)) {
-            $role = Role::where('name', $role)->first();
+            $role = app(config('laravolt.acl.models.role'))->where('name', $role)->first();
         }
 
         return $this->roles()->detach($role);
@@ -72,7 +70,7 @@ trait HasRoleAndPermission
             if (is_numeric($role)) {
                 return (int)$role;
             } elseif (is_string($role)) {
-                $role = Role::firstOrCreate(['name' => $role]);
+                $role = app(config('laravolt.acl.models.role'))->firstOrCreate(['name' => $role]);
 
                 return $role->getKey();
             }
@@ -99,11 +97,11 @@ trait HasRoleAndPermission
         }
 
         if (is_string($permission)) {
-            $permission = Permission::where('name', $permission)->first();
+            $permission = app(config('laravolt.acl.models.permission'))->where('name', $permission)->first();
         }
 
         if (is_integer($permission)) {
-            $permission = Permission::find($permission);
+            $permission = app(config('laravolt.acl.models.permission'))->find($permission);
         }
 
         if (!$permission instanceof Model) {

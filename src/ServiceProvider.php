@@ -8,7 +8,6 @@ use Illuminate\Contracts\Auth\Access\Gate;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use Laravolt\Acl\Commands\SyncPermission;
 use Laravolt\Acl\Contracts\HasRoleAndPermission;
-use Laravolt\Acl\Models\Permission;
 
 /**
  * Class PackageServiceProvider
@@ -74,7 +73,7 @@ class ServiceProvider extends BaseServiceProvider
 
     protected function definePermission(Gate $gate)
     {
-        $permissions = Permission::all();
+        $permissions = app(config('laravolt.acl.models.permission'))->all();
         foreach ($permissions as $permission) {
             $gate->define($permission->name, function (HasRoleAndPermission $user) use ($permission) {
                 return $user->hasPermission($permission);
