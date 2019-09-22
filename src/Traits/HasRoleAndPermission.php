@@ -105,7 +105,7 @@ trait HasRoleAndPermission
         }
 
         if (!$permission instanceof Model) {
-            throw new \InvalidArgumentException('Argument must be integer, string, or an instance of '.Model::class);
+            return false;
         }
 
         foreach ($this->roles as $assignedRole) {
