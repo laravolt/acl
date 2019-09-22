@@ -39,11 +39,13 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Application is booting
      * @see http://laravel.com/docs/master/providers#the-boot-method
-     * @param  Gate  $gate
+     * @param Gate $gate
      */
     public function boot(Gate $gate)
     {
         $this->registerConfigurations();
+
+        $this->registerWildcardPermission();
 
         $this->registerAcl($gate);
 
@@ -123,11 +125,20 @@ class ServiceProvider extends BaseServiceProvider
 
     /**
      * Loads a path relative to the package base directory
-     * @param  string  $path
+     * @param string $path
      * @return string
      */
     protected function packagePath($path = '')
     {
         return sprintf("%s/../%s", __DIR__, $path);
+    }
+
+    protected function registerWildcardPermission()
+    {
+        \Illuminate\Support\Facades\Gate::before(function (HasRoleAndPermission $user) {
+            if ($user->hasPermission('*')) {
+                return true;
+            }
+        });
     }
 }
