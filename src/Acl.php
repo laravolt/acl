@@ -47,7 +47,8 @@ class Acl
         }
 
         // delete unused permissions
-        $unusedPermissions = app(config('laravolt.acl.models.permission'))->whereNotIn('name', $this->permissions())->get();
+        $permissions = $this->permissions() + ['*'];
+        $unusedPermissions = app(config('laravolt.acl.models.permission'))->whereNotIn('name', $permissions)->get();
         foreach ($unusedPermissions as $permission) {
             $items->push(['id' => $permission->getKey(), 'name' => $permission->name, 'status' => 'Deleted']);
             $permission->delete();
