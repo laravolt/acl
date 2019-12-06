@@ -38,6 +38,13 @@ class Role extends Model
         return $this->permissions()->detach($permission);
     }
 
+    public function hasPermission($permission)
+    {
+        return once(function () use ($permission) {
+            return $this->_hasPermission($permission);
+        });
+    }
+
     public function syncPermission(array $permissions)
     {
         $ids = collect($permissions)->transform(function ($permission) {
@@ -46,12 +53,38 @@ class Role extends Model
             } elseif (is_string($permission)) {
                 $permissionObject = app(config('laravolt.acl.models.permission'))->firstOrCreate(['name' => $permission]);
 
-                return $permissionObject->id;
+                return $permissionObject->getKey();
+            } elseif ($permission instanceof Model) {
+                return $permission->getKey();
             }
         })->filter(function ($id) {
             return $id > 0;
         });
 
         return $this->permissions()->sync($ids->toArray());
+    }
+
+    protected function _hasPermission($permission)
+    {
+        $model = $permission;
+
+        if (!$permission instanceof Model) {
+            $model = app(config('laravolt.acl.models.permission'))->find($permission);
+            if (!$model) {
+                $model = app(config('laravolt.acl.models.permission'))->where('name', $permission)->first();
+            }
+        }
+
+        if (!$model instanceof Model) {
+            return false;
+        }
+
+        foreach ($this->permissions as $assignedPermission) {
+            if ($model->is($assignedPermission)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
