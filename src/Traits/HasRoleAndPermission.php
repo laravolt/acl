@@ -3,6 +3,7 @@
 namespace Laravolt\Acl\Traits;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 trait HasRoleAndPermission
 {
@@ -10,6 +11,24 @@ trait HasRoleAndPermission
     {
         return $this->belongsToMany(config('laravolt.acl.models.role'), 'acl_role_user', 'user_id', 'role_id');
     }
+
+    public function permissions()
+    {
+        // save users permissions result for current request
+        return Cache::driver('array')->rememberForever("users.{$this->getKey()}.permissions", function () {
+            /** @var Permission $permissionModel */
+            $permissionModel = app(config('laravolt.acl.models.permission'));
+
+            return $permissionModel
+                ->newModelQuery()
+                ->selectRaw('acl_permissions.*')
+                ->join('acl_permission_role', 'acl_permissions.id', '=', 'acl_permission_role.permission_id')
+                ->join('acl_role_user', 'acl_role_user.role_id', '=', 'acl_permission_role.role_id')
+                ->join('users', 'users.id', '=', 'acl_role_user.user_id')
+                ->where('users.id', $this->getKey())
+                ->get()->unique();
+        });
+    }    
 
     public function hasRole($role, $checkAll = false)
     {
@@ -105,11 +124,11 @@ trait HasRoleAndPermission
         }
 
         if (is_string($permission)) {
-            $permission = app(config('laravolt.acl.models.permission'))->where('name', $permission)->first();
+            $permission = $this->permissions()->firstWhere('name', $permission);
         }
 
         if (is_integer($permission)) {
-            $permission = app(config('laravolt.acl.models.permission'))->find($permission);
+            $permission = $this->permissions()->firstWhere('id', $permission);
         }
 
         if (!$permission instanceof Model) {
